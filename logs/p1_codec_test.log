@@ -1,0 +1,120 @@
+Стек работает: minio, postgres, lakekeeper, trino
+Oct 11, 2026 12:37:08 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+CREATE SCHEMA
+CREATE SCHEMA
+CREATE SCHEMA
+
+##################  BRONZE: GZIP  ##################
+--- время записи Bronze (GZIP) ---
+Oct 11, 2026 12:37:09 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+DROP TABLE
+CREATE TABLE: 150000 rows
+DROP TABLE
+CREATE TABLE: 1500000 rows
+DROP TABLE
+CREATE TABLE: 6001215 rows
+
+real	0m6.603s
+user	0m0.016s
+sys	0m0.017s
+--- размер Bronze (GZIP) ---
+Oct 11, 2026 12:37:16 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ codec | files |  bytes   | size_mb 
+-------+-------+----------+---------
+ GZIP  |     4 | 48920659 | 46.6544 
+(1 row)
+--- Q3 на Bronze (GZIP), прогон 1 ---
+Oct 11, 2026 12:37:16 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+
+real	0m1.243s
+user	0m0.017s
+sys	0m0.010s
+--- Q3 на Bronze (GZIP), прогон 2 ---
+Oct 11, 2026 12:37:18 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+
+real	0m1.191s
+user	0m0.016s
+sys	0m0.010s
+--- Q3 на Bronze (GZIP), прогон 3 ---
+Oct 11, 2026 12:37:19 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+
+real	0m1.218s
+user	0m0.019s
+sys	0m0.012s
+
+##################  BRONZE: ZSTD  ##################
+--- время записи Bronze (ZSTD) ---
+Oct 11, 2026 12:37:20 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+DROP TABLE
+CREATE TABLE: 150000 rows
+DROP TABLE
+CREATE TABLE: 1500000 rows
+DROP TABLE
+CREATE TABLE: 6001215 rows
+
+real	0m3.133s
+user	0m0.016s
+sys	0m0.011s
+--- размер Bronze (ZSTD) ---
+Oct 11, 2026 12:37:23 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ codec | files |  bytes   | size_mb 
+-------+-------+----------+---------
+ ZSTD  |     4 | 48693580 | 46.4378 
+(1 row)
+--- Q3 на Bronze (ZSTD), прогон 1 ---
+Oct 11, 2026 12:37:24 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+
+real	0m1.171s
+user	0m0.021s
+sys	0m0.012s
+--- Q3 на Bronze (ZSTD), прогон 2 ---
+Oct 11, 2026 12:37:25 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+
+real	0m1.197s
+user	0m0.016s
+sys	0m0.012s
+--- Q3 на Bronze (ZSTD), прогон 3 ---
+Oct 11, 2026 12:37:26 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+
+real	0m1.117s
+user	0m0.017s
+sys	0m0.012s
+
+##################  Время выполнения из system.runtime.queries  ##################
+Oct 11, 2026 12:37:27 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+       tag       |  state   | exec_ms 
+-----------------+----------+---------
+ p1_q3_GZIP_run1 | FINISHED |    1426 
+ p1_q3_GZIP_run2 | FINISHED |     793 
+ p1_q3_GZIP_run3 | FINISHED |     742 
+ p1_q3_ZSTD_run1 | FINISHED |     588 
+ p1_q3_ZSTD_run2 | FINISHED |     574 
+ p1_q3_ZSTD_run3 | FINISHED |     556 
+ p1_q3_GZIP_run1 | FINISHED |     722 
+ p1_q3_GZIP_run2 | FINISHED |     637 
+ p1_q3_GZIP_run3 | FINISHED |     714 
+ p1_q3_ZSTD_run1 | FINISHED |     521 
+ p1_q3_ZSTD_run2 | FINISHED |     488 
+ p1_q3_ZSTD_run3 | FINISHED |     541 
+ p1_q3_GZIP_run1 | FINISHED |     643 
+ p1_q3_GZIP_run2 | FINISHED |     596 
+ p1_q3_GZIP_run3 | FINISHED |     592 
+ p1_q3_ZSTD_run1 | FINISHED |     552 
+ p1_q3_ZSTD_run2 | FINISHED |     567 
+ p1_q3_ZSTD_run3 | FINISHED |     500 
+(18 rows)
+ГОТОВО

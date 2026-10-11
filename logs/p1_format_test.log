@@ -1,0 +1,378 @@
+Стек работает: minio, postgres, lakekeeper, trino
+
+##################  PARQUET / NONE  (схема fmt_parquet_none)  ##################
+--- время записи (PARQUET/NONE) ---
+Oct 11, 2026 12:38:10 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+CREATE SCHEMA
+DROP TABLE
+CREATE TABLE: 150000 rows
+DROP TABLE
+CREATE TABLE: 1500000 rows
+DROP TABLE
+CREATE TABLE: 6001215 rows
+
+real	0m3.906s
+user	0m0.014s
+sys	0m0.012s
+--- размер и файлы (PARQUET/NONE) ---
+Oct 11, 2026 12:38:14 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ format  | codec | files |   bytes   | size_mb  
+---------+-------+-------+-----------+----------
+ PARQUET | NONE  |     4 | 125982014 | 120.1458 
+(1 row)
+--- кодек, записанный в свойствах таблицы ---
+Oct 11, 2026 12:38:15 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+               key               |    value     
+---------------------------------+--------------
+ write.format.default            | PARQUET      
+ write.parquet.compression-codec | uncompressed 
+(2 rows)
+Oct 11, 2026 12:38:15 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:38:16 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:38:18 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+--- время Q3 из system.runtime.queries (PARQUET/NONE) ---
+Oct 11, 2026 12:38:19 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+           tag            |  state   | exec_ms 
+--------------------------+----------+---------
+ p1_fmt_PARQUET_NONE_run1 | FINISHED |     560 
+ p1_fmt_PARQUET_NONE_run2 | FINISHED |     480 
+ p1_fmt_PARQUET_NONE_run3 | FINISHED |     580 
+(3 rows)
+
+##################  PARQUET / SNAPPY  (схема fmt_parquet_snappy)  ##################
+--- время записи (PARQUET/SNAPPY) ---
+Oct 11, 2026 12:38:19 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+CREATE SCHEMA
+DROP TABLE
+CREATE TABLE: 150000 rows
+DROP TABLE
+CREATE TABLE: 1500000 rows
+DROP TABLE
+CREATE TABLE: 6001215 rows
+
+real	0m4.035s
+user	0m0.020s
+sys	0m0.019s
+--- размер и файлы (PARQUET/SNAPPY) ---
+Oct 11, 2026 12:38:24 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ format  | codec  | files |  bytes   | size_mb 
+---------+--------+-------+----------+---------
+ PARQUET | SNAPPY |     4 | 71114552 | 67.8201 
+(1 row)
+--- кодек, записанный в свойствах таблицы ---
+Oct 11, 2026 12:38:24 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+               key               |  value  
+---------------------------------+---------
+ write.format.default            | PARQUET 
+ write.parquet.compression-codec | snappy  
+(2 rows)
+Oct 11, 2026 12:38:25 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:38:27 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:38:29 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+--- время Q3 из system.runtime.queries (PARQUET/SNAPPY) ---
+Oct 11, 2026 12:38:30 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+            tag             |  state   | exec_ms 
+----------------------------+----------+---------
+ p1_fmt_PARQUET_SNAPPY_run1 | FINISHED |     761 
+ p1_fmt_PARQUET_SNAPPY_run2 | FINISHED |     981 
+ p1_fmt_PARQUET_SNAPPY_run3 | FINISHED |     819 
+(3 rows)
+
+##################  PARQUET / GZIP  (схема fmt_parquet_gzip)  ##################
+--- время записи (PARQUET/GZIP) ---
+Oct 11, 2026 12:38:31 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+CREATE SCHEMA
+DROP TABLE
+CREATE TABLE: 150000 rows
+DROP TABLE
+CREATE TABLE: 1500000 rows
+DROP TABLE
+CREATE TABLE: 6001215 rows
+
+real	0m8.269s
+user	0m0.018s
+sys	0m0.019s
+--- размер и файлы (PARQUET/GZIP) ---
+Oct 11, 2026 12:38:39 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ format  | codec | files |  bytes   | size_mb 
+---------+-------+-------+----------+---------
+ PARQUET | GZIP  |     4 | 48926279 | 46.6597 
+(1 row)
+--- кодек, записанный в свойствах таблицы ---
+Oct 11, 2026 12:38:40 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+               key               |  value  
+---------------------------------+---------
+ write.format.default            | PARQUET 
+ write.parquet.compression-codec | gzip    
+(2 rows)
+Oct 11, 2026 12:38:41 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:38:43 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:38:45 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+--- время Q3 из system.runtime.queries (PARQUET/GZIP) ---
+Oct 11, 2026 12:38:47 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+           tag            |  state   | exec_ms 
+--------------------------+----------+---------
+ p1_fmt_PARQUET_GZIP_run1 | FINISHED |    1219 
+ p1_fmt_PARQUET_GZIP_run2 | FINISHED |    1038 
+ p1_fmt_PARQUET_GZIP_run3 | FINISHED |     976 
+(3 rows)
+
+##################  PARQUET / ZSTD  (схема fmt_parquet_zstd)  ##################
+--- время записи (PARQUET/ZSTD) ---
+Oct 11, 2026 12:38:48 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+CREATE SCHEMA
+DROP TABLE
+CREATE TABLE: 150000 rows
+DROP TABLE
+CREATE TABLE: 1500000 rows
+DROP TABLE
+CREATE TABLE: 6001215 rows
+
+real	0m4.801s
+user	0m0.018s
+sys	0m0.019s
+--- размер и файлы (PARQUET/ZSTD) ---
+Oct 11, 2026 12:38:53 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ format  | codec | files |  bytes   | size_mb 
+---------+-------+-------+----------+---------
+ PARQUET | ZSTD  |     4 | 48686884 | 46.4314 
+(1 row)
+--- кодек, записанный в свойствах таблицы ---
+Oct 11, 2026 12:38:53 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+               key               |  value  
+---------------------------------+---------
+ write.format.default            | PARQUET 
+ write.parquet.compression-codec | zstd    
+(2 rows)
+Oct 11, 2026 12:38:54 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:38:55 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:38:57 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+--- время Q3 из system.runtime.queries (PARQUET/ZSTD) ---
+Oct 11, 2026 12:38:58 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+           tag            |  state   | exec_ms 
+--------------------------+----------+---------
+ p1_fmt_PARQUET_ZSTD_run1 | FINISHED |     608 
+ p1_fmt_PARQUET_ZSTD_run2 | FINISHED |     940 
+ p1_fmt_PARQUET_ZSTD_run3 | FINISHED |     506 
+(3 rows)
+
+##################  ORC / NONE  (схема fmt_orc_none)  ##################
+--- время записи (ORC/NONE) ---
+Oct 11, 2026 12:38:59 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+CREATE SCHEMA
+DROP TABLE
+CREATE TABLE: 150000 rows
+DROP TABLE
+CREATE TABLE: 1500000 rows
+DROP TABLE
+CREATE TABLE: 6001215 rows
+
+real	0m3.951s
+user	0m0.017s
+sys	0m0.013s
+--- размер и файлы (ORC/NONE) ---
+Oct 11, 2026 12:39:03 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ format | codec | files |   bytes   | size_mb  
+--------+-------+-------+-----------+----------
+ ORC    | NONE  |     4 | 127326247 | 121.4278 
+(1 row)
+--- кодек, записанный в свойствах таблицы ---
+Oct 11, 2026 12:39:04 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+             key             | value 
+-----------------------------+-------
+ write.format.default        | ORC   
+ write.orc.compression-codec | none  
+(2 rows)
+Oct 11, 2026 12:39:04 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:39:06 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:39:07 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+--- время Q3 из system.runtime.queries (ORC/NONE) ---
+Oct 11, 2026 12:39:09 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+         tag          |  state   | exec_ms 
+----------------------+----------+---------
+ p1_fmt_ORC_NONE_run1 | FINISHED |     928 
+ p1_fmt_ORC_NONE_run2 | FINISHED |     707 
+ p1_fmt_ORC_NONE_run3 | FINISHED |     740 
+(3 rows)
+
+##################  ORC / SNAPPY  (схема fmt_orc_snappy)  ##################
+--- время записи (ORC/SNAPPY) ---
+Oct 11, 2026 12:39:09 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+CREATE SCHEMA
+DROP TABLE
+CREATE TABLE: 150000 rows
+DROP TABLE
+CREATE TABLE: 1500000 rows
+DROP TABLE
+CREATE TABLE: 6001215 rows
+
+real	0m4.191s
+user	0m0.016s
+sys	0m0.018s
+--- размер и файлы (ORC/SNAPPY) ---
+Oct 11, 2026 12:39:14 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ format | codec  | files |  bytes   | size_mb 
+--------+--------+-------+----------+---------
+ ORC    | SNAPPY |     4 | 74125777 | 70.6918 
+(1 row)
+--- кодек, записанный в свойствах таблицы ---
+Oct 11, 2026 12:39:15 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+             key             | value  
+-----------------------------+--------
+ write.format.default        | ORC    
+ write.orc.compression-codec | snappy 
+(2 rows)
+Oct 11, 2026 12:39:15 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:39:17 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:39:19 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+--- время Q3 из system.runtime.queries (ORC/SNAPPY) ---
+Oct 11, 2026 12:39:20 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+          tag           |  state   | exec_ms 
+------------------------+----------+---------
+ p1_fmt_ORC_SNAPPY_run1 | FINISHED |    1189 
+ p1_fmt_ORC_SNAPPY_run2 | FINISHED |     754 
+ p1_fmt_ORC_SNAPPY_run3 | FINISHED |     598 
+(3 rows)
+
+##################  ORC / GZIP  (схема fmt_orc_gzip)  ##################
+--- время записи (ORC/GZIP) ---
+Oct 11, 2026 12:39:21 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+CREATE SCHEMA
+DROP TABLE
+CREATE TABLE: 150000 rows
+DROP TABLE
+CREATE TABLE: 1500000 rows
+DROP TABLE
+CREATE TABLE: 6001215 rows
+
+real	0m5.223s
+user	0m0.014s
+sys	0m0.020s
+--- размер и файлы (ORC/GZIP) ---
+Oct 11, 2026 12:39:26 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ format | codec | files |  bytes   | size_mb 
+--------+-------+-------+----------+---------
+ ORC    | GZIP  |     4 | 52270559 | 49.8491 
+(1 row)
+--- кодек, записанный в свойствах таблицы ---
+Oct 11, 2026 12:39:27 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+             key             | value 
+-----------------------------+-------
+ write.format.default        | ORC   
+ write.orc.compression-codec | zlib  
+(2 rows)
+Oct 11, 2026 12:39:27 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:39:29 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:39:30 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+--- время Q3 из system.runtime.queries (ORC/GZIP) ---
+Oct 11, 2026 12:39:32 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+         tag          |  state   | exec_ms 
+----------------------+----------+---------
+ p1_fmt_ORC_GZIP_run1 | FINISHED |     979 
+ p1_fmt_ORC_GZIP_run2 | FINISHED |     705 
+ p1_fmt_ORC_GZIP_run3 | FINISHED |     648 
+(3 rows)
+
+##################  ORC / ZSTD  (схема fmt_orc_zstd)  ##################
+--- время записи (ORC/ZSTD) ---
+Oct 11, 2026 12:39:32 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+CREATE SCHEMA
+DROP TABLE
+CREATE TABLE: 150000 rows
+DROP TABLE
+CREATE TABLE: 1500000 rows
+DROP TABLE
+CREATE TABLE: 6001215 rows
+
+real	0m3.631s
+user	0m0.013s
+sys	0m0.011s
+--- размер и файлы (ORC/ZSTD) ---
+Oct 11, 2026 12:39:36 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ format | codec | files |  bytes   | size_mb 
+--------+-------+-------+----------+---------
+ ORC    | ZSTD  |     4 | 54258098 | 51.7446 
+(1 row)
+--- кодек, записанный в свойствах таблицы ---
+Oct 11, 2026 12:39:37 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+             key             | value 
+-----------------------------+-------
+ write.format.default        | ORC   
+ write.orc.compression-codec | zstd  
+(2 rows)
+Oct 11, 2026 12:39:38 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:39:39 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+Oct 11, 2026 12:39:40 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+--- время Q3 из system.runtime.queries (ORC/ZSTD) ---
+Oct 11, 2026 12:39:41 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+         tag          |  state   | exec_ms 
+----------------------+----------+---------
+ p1_fmt_ORC_ZSTD_run1 | FINISHED |     740 
+ p1_fmt_ORC_ZSTD_run2 | FINISHED |     640 
+ p1_fmt_ORC_ZSTD_run3 | FINISHED |     509 
+(3 rows)
+ГОТОВО

@@ -1,0 +1,165 @@
+Стек работает: minio, postgres, lakekeeper, trino
+:: loading settings :: url = jar:file:/opt/spark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+Ivy Default Cache set to: /tmp/ivy2/cache
+The jars for the packages stored in: /tmp/ivy2/jars
+org.apache.iceberg#iceberg-spark-runtime-3.5_2.12 added as a dependency
+org.apache.iceberg#iceberg-aws-bundle added as a dependency
+:: resolving dependencies :: org.apache.spark#spark-submit-parent-f8b6735c-487e-442a-ac02-fe2520e8dc16;1.0
+	confs: [default]
+	found org.apache.iceberg#iceberg-spark-runtime-3.5_2.12;1.5.2 in central
+	found org.apache.iceberg#iceberg-aws-bundle;1.5.2 in central
+downloading https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark-runtime-3.5_2.12/1.5.2/iceberg-spark-runtime-3.5_2.12-1.5.2.jar ...
+	[SUCCESSFUL ] org.apache.iceberg#iceberg-spark-runtime-3.5_2.12;1.5.2!iceberg-spark-runtime-3.5_2.12.jar (1282ms)
+downloading https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-aws-bundle/1.5.2/iceberg-aws-bundle-1.5.2.jar ...
+	[SUCCESSFUL ] org.apache.iceberg#iceberg-aws-bundle;1.5.2!iceberg-aws-bundle.jar (670ms)
+:: resolution report :: resolve 654ms :: artifacts dl 1956ms
+	:: modules in use:
+	org.apache.iceberg#iceberg-aws-bundle;1.5.2 from central in [default]
+	org.apache.iceberg#iceberg-spark-runtime-3.5_2.12;1.5.2 from central in [default]
+	---------------------------------------------------------------------
+	|                  |            modules            ||   artifacts   |
+	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+	---------------------------------------------------------------------
+	|      default     |   2   |   2   |   2   |   0   ||   2   |   2   |
+	---------------------------------------------------------------------
+:: retrieving :: org.apache.spark#spark-submit-parent-f8b6735c-487e-442a-ac02-fe2520e8dc16
+	confs: [default]
+	2 artifacts copied, 0 already retrieved (70426kB/64ms)
+26/10/11 12:38:00 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+>>> Таблицы схемы bronze (видит Spark через Lakekeeper)
++---------+---------+-----------+
+|namespace|tableName|isTemporary|
++---------+---------+-----------+
+|bronze   |customer |false      |
+|bronze   |orders   |false      |
+|bronze   |lineitem |false      |
++---------+---------+-----------+
+
+>>> bronze.customer: схема, число строк, файлы данных
++----------+---------+-------+
+|col_name  |data_type|comment|
++----------+---------+-------+
+|custkey   |bigint   |NULL   |
+|mktsegment|string   |NULL   |
++----------+---------+-------+
+
++--------+
+|rows_cnt|
++--------+
+|  150000|
++--------+
+
++-----+-------+
+|files|size_mb|
++-----+-------+
+|    1|  0.230|
++-----+-------+
+
+>>> bronze.orders: схема, число строк, файлы данных
++------------+---------+-------+
+|col_name    |data_type|comment|
++------------+---------+-------+
+|orderkey    |bigint   |NULL   |
+|custkey     |bigint   |NULL   |
+|orderdate   |date     |NULL   |
+|shippriority|int      |NULL   |
++------------+---------+-------+
+
++--------+
+|rows_cnt|
++--------+
+| 1500000|
++--------+
+
++-----+-------+
+|files|size_mb|
++-----+-------+
+|    1|  6.663|
++-----+-------+
+
+>>> bronze.lineitem: схема, число строк, файлы данных
++-------------+---------+-------+
+|col_name     |data_type|comment|
++-------------+---------+-------+
+|orderkey     |bigint   |NULL   |
+|linenumber   |int      |NULL   |
+|extendedprice|double   |NULL   |
+|discount     |double   |NULL   |
+|shipdate     |date     |NULL   |
++-------------+---------+-------+
+
++--------+
+|rows_cnt|
++--------+
+| 6001215|
++--------+
+
++-----+-------+
+|files|size_mb|
++-----+-------+
+|    2| 39.537|
++-----+-------+
+
+>>> Пример строк Bronze lineitem
++--------+----------+-------------+--------+----------+
+|orderkey|linenumber|extendedprice|discount|shipdate  |
++--------+----------+-------------+--------+----------+
+|1345792 |5         |19535.4      |0.1     |1992-09-03|
+|1345793 |1         |55599.6      |0.05    |1997-01-04|
+|1345793 |2         |75843.18     |0.1     |1997-01-08|
+|1345793 |3         |18412.68     |0.0     |1997-01-03|
+|1345794 |1         |52413.48     |0.08    |1992-11-19|
++--------+----------+-------------+--------+----------+
+
+>>> Q3 на Bronze в Spark, прогон 1
++--------+------------------+----------+------------+
+|orderkey|revenue           |orderdate |shippriority|
++--------+------------------+----------+------------+
+|2456423 |406181.0111       |1995-03-05|0           |
+|3459808 |405838.69889999996|1995-03-04|0           |
+|492164  |390324.061        |1995-02-19|0           |
+|1188320 |384537.9359       |1995-03-09|0           |
+|2435712 |378673.05580000003|1995-02-26|0           |
+|4878020 |378376.7952       |1995-03-12|0           |
+|5521732 |375153.9215       |1995-03-13|0           |
+|2628192 |373133.30939999997|1995-02-22|0           |
+|993600  |371407.4595       |1995-03-05|0           |
+|2300070 |367371.1452000001 |1995-03-13|0           |
++--------+------------------+----------+------------+
+
+RESULT SPARK_Q3_RUN1_SEC=1.691
+>>> Q3 на Bronze в Spark, прогон 2
++--------+------------------+----------+------------+
+|orderkey|revenue           |orderdate |shippriority|
++--------+------------------+----------+------------+
+|2456423 |406181.0111       |1995-03-05|0           |
+|3459808 |405838.69889999996|1995-03-04|0           |
+|492164  |390324.061        |1995-02-19|0           |
+|1188320 |384537.9359       |1995-03-09|0           |
+|2435712 |378673.05580000003|1995-02-26|0           |
+|4878020 |378376.7952       |1995-03-12|0           |
+|5521732 |375153.9215       |1995-03-13|0           |
+|2628192 |373133.30939999997|1995-02-22|0           |
+|993600  |371407.4595       |1995-03-05|0           |
+|2300070 |367371.1452000001 |1995-03-13|0           |
++--------+------------------+----------+------------+
+
+RESULT SPARK_Q3_RUN2_SEC=0.926
+>>> Q3 на Bronze в Spark, прогон 3
++--------+------------------+----------+------------+
+|orderkey|revenue           |orderdate |shippriority|
++--------+------------------+----------+------------+
+|2456423 |406181.0111       |1995-03-05|0           |
+|3459808 |405838.69889999996|1995-03-04|0           |
+|492164  |390324.061        |1995-02-19|0           |
+|1188320 |384537.9359       |1995-03-09|0           |
+|2435712 |378673.05580000003|1995-02-26|0           |
+|4878020 |378376.7952       |1995-03-12|0           |
+|5521732 |375153.9215       |1995-03-13|0           |
+|2628192 |373133.30939999997|1995-02-22|0           |
+|993600  |371407.4595       |1995-03-05|0           |
+|2300070 |367371.1452000001 |1995-03-13|0           |
++--------+------------------+----------+------------+
+
+RESULT SPARK_Q3_RUN3_SEC=0.827
+ГОТОВО

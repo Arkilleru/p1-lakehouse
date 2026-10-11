@@ -1,0 +1,5 @@
+SELECT 'bronze.customer' AS tbl, (SELECT count(*) FROM lakekeeper.bronze.customer) AS rows_cnt, count(*) AS files, sum(file_size_in_bytes) AS bytes, round(CAST(sum(file_size_in_bytes) AS double)/1048576, 4) AS size_mb FROM lakekeeper.bronze."customer$files"
+UNION ALL SELECT 'bronze.orders',   (SELECT count(*) FROM lakekeeper.bronze.orders),   count(*), sum(file_size_in_bytes), round(CAST(sum(file_size_in_bytes) AS double)/1048576, 4) FROM lakekeeper.bronze."orders$files"
+UNION ALL SELECT 'bronze.lineitem', (SELECT count(*) FROM lakekeeper.bronze.lineitem), count(*), sum(file_size_in_bytes), round(CAST(sum(file_size_in_bytes) AS double)/1048576, 4) FROM lakekeeper.bronze."lineitem$files"
+UNION ALL SELECT 'silver.order_lines', (SELECT count(*) FROM lakekeeper.silver.order_lines), count(*), sum(file_size_in_bytes), round(CAST(sum(file_size_in_bytes) AS double)/1048576, 4) FROM lakekeeper.silver."order_lines$files"
+UNION ALL SELECT 'gold.shipping_priority', (SELECT count(*) FROM lakekeeper.gold.shipping_priority), count(*), sum(file_size_in_bytes), round(CAST(sum(file_size_in_bytes) AS double)/1048576, 4) FROM lakekeeper.gold."shipping_priority$files";

@@ -1,0 +1,148 @@
+Стек работает: minio, postgres, lakekeeper, trino
+################  SCHEMA EVOLUTION на Silver  ################
+--- схема и число файлов ДО ---
+Oct 11, 2026 12:37:44 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+    Column     |  Type   | Extra | Comment 
+---------------+---------+-------+---------
+ orderkey      | bigint  |       |         
+ linenumber    | integer |       |         
+ orderdate     | date    |       |         
+ shippriority  | integer |       |         
+ extendedprice | double  |       |         
+ discount      | double  |       |         
+ shipdate      | date    |       |         
+ line_revenue  | double  |       |         
+ days_to_ship  | bigint  |       |         
+(9 rows)
+Oct 11, 2026 12:37:44 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ files_before 
+--------------
+            1 
+(1 row)
+Oct 11, 2026 12:37:45 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ rows_total 
+------------
+      30519 
+(1 row)
+--- ADD COLUMN discount_amount ---
+Oct 11, 2026 12:37:45 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ADD COLUMN
+--- старые строки читают NULL в новой колонке ---
+Oct 11, 2026 12:37:46 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ orderkey | extendedprice | discount | discount_amount 
+----------+---------------+----------+-----------------
+     1281 |      47299.69 |     0.08 |            NULL 
+    13956 |       7147.32 |     0.08 |            NULL 
+    16262 |      61396.28 |     0.01 |            NULL 
+    21442 |      10915.52 |      0.0 |            NULL 
+    22756 |      84310.64 |      0.0 |            NULL 
+(5 rows)
+Oct 11, 2026 12:37:47 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ rows_total | new_col_not_null 
+------------+------------------
+      30519 |                0 
+(1 row)
+--- число файлов ПОСЛЕ (файлы не переписывались) ---
+Oct 11, 2026 12:37:48 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ files_after 
+-------------
+           1 
+(1 row)
+--- RENAME COLUMN discount_amount -> line_discount ---
+Oct 11, 2026 12:37:48 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+RENAME COLUMN
+Oct 11, 2026 12:37:49 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+    Column     |  Type   | Extra | Comment 
+---------------+---------+-------+---------
+ orderkey      | bigint  |       |         
+ linenumber    | integer |       |         
+ orderdate     | date    |       |         
+ shippriority  | integer |       |         
+ extendedprice | double  |       |         
+ discount      | double  |       |         
+ shipdate      | date    |       |         
+ line_revenue  | double  |       |         
+ days_to_ship  | bigint  |       |         
+ line_discount | double  |       |         
+(10 rows)
+--- убираем тестовую колонку, схема Silver как раньше ---
+Oct 11, 2026 12:37:50 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+DROP COLUMN
+Oct 11, 2026 12:37:50 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+    Column     |  Type   | Extra | Comment 
+---------------+---------+-------+---------
+ orderkey      | bigint  |       |         
+ linenumber    | integer |       |         
+ orderdate     | date    |       |         
+ shippriority  | integer |       |         
+ extendedprice | double  |       |         
+ discount      | double  |       |         
+ shipdate      | date    |       |         
+ line_revenue  | double  |       |         
+ days_to_ship  | bigint  |       |         
+(9 rows)
+
+################  TIME TRAVEL: восстановление из снапшота  ################
+--- история снапшотов ---
+Oct 11, 2026 12:37:51 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+     snapshot_id     |        committed_at         | operation 
+---------------------+-----------------------------+-----------
+ 8316187271636812296 | 2026-10-11 12:37:37.177 UTC | append    
+(1 row)
+Хороший снапшот: 8316187271636812296
+Oct 11, 2026 12:37:52 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ rows_before_accident 
+----------------------
+                30519 
+(1 row)
+--- АВАРИЯ: случайно удалили строки (DELETE) ---
+Oct 11, 2026 12:37:53 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+DELETE: 4832 rows
+Oct 11, 2026 12:37:54 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ rows_after_accident 
+---------------------
+               25687 
+(1 row)
+--- старый снапшот цел: читаем его через FOR VERSION AS OF ---
+Oct 11, 2026 12:37:54 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ rows_in_old_snapshot 
+----------------------
+                30519 
+(1 row)
+--- ВОССТАНОВЛЕНИЕ: rollback_to_snapshot ---
+Oct 11, 2026 12:37:55 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ALTER TABLE EXECUTE
+ rows 
+------
+(0 rows)
+Oct 11, 2026 12:37:56 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ rows_after_restore 
+--------------------
+              30519 
+(1 row)
+Oct 11, 2026 12:37:56 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+     snapshot_id     |        committed_at         | operation 
+---------------------+-----------------------------+-----------
+ 8316187271636812296 | 2026-10-11 12:37:37.177 UTC | append    
+ 4247796780036736400 | 2026-10-11 12:37:53.825 UTC | delete    
+(2 rows)
+ГОТОВО

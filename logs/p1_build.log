@@ -1,0 +1,135 @@
+Стек работает: minio, postgres, lakekeeper, trino
+=== 0. Схемы ===
+Oct 11, 2026 12:37:28 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+CREATE SCHEMA
+CREATE SCHEMA
+CREATE SCHEMA
+       Schema       
+--------------------
+ benchmark          
+ bronze             
+ gold               
+ information_schema 
+ lakehouse          
+ silver             
+ system             
+(7 rows)
+=== 1. Bronze (кодек ZSTD) ===
+Oct 11, 2026 12:37:28 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+DROP TABLE
+CREATE TABLE: 150000 rows
+DROP TABLE
+CREATE TABLE: 1500000 rows
+DROP TABLE
+CREATE TABLE: 6001215 rows
+
+real	0m3.160s
+user	0m0.018s
+sys	0m0.013s
+=== 1a. Отчёт качества Bronze ===
+Oct 11, 2026 12:37:32 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+   tbl    | total_rows | null_keys | null_shipdate | bad_price | bad_discount | duplicate_rows 
+----------+------------+-----------+---------------+-----------+--------------+----------------
+ lineitem |    6001215 |         0 |             0 |         0 |            0 |              0 
+(1 row)
+  tbl   | total_rows | null_keys | null_orderdate | duplicate_rows 
+--------+------------+-----------+----------------+----------------
+ orders |    1500000 |         0 |              0 |              0 
+(1 row)
+ raw_value  | len |  cnt  
+------------+-----+-------
+ AUTOMOBILE |  10 | 29752 
+ BUILDING   |   8 | 30142 
+ FURNITURE  |   9 | 29968 
+ HOUSEHOLD  |   9 | 30189 
+ MACHINERY  |   9 | 29949 
+(5 rows)
+=== 2. Silver (очистка, нормализация, обогащение) ===
+Oct 11, 2026 12:37:35 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+DROP TABLE
+CREATE TABLE: 30519 rows
+
+real	0m2.125s
+user	0m0.020s
+sys	0m0.014s
+--- Silver: проверка диапазонов и обогащённых колонок ---
+Oct 11, 2026 12:37:37 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ rows_cnt | null_revenue | min_days | max_days | avg_days 
+----------+--------------+----------+----------+----------
+    30519 |            0 |        2 |      121 |    81.09 
+(1 row)
+Oct 11, 2026 12:37:38 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+    Column     |  Type   | Extra | Comment 
+---------------+---------+-------+---------
+ orderkey      | bigint  |       |         
+ linenumber    | integer |       |         
+ orderdate     | date    |       |         
+ shippriority  | integer |       |         
+ extendedprice | double  |       |         
+ discount      | double  |       |         
+ shipdate      | date    |       |         
+ line_revenue  | double  |       |         
+ days_to_ship  | bigint  |       |         
+(9 rows)
+=== 3. Gold ===
+Oct 11, 2026 12:37:38 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+SET SESSION
+DROP TABLE
+CREATE TABLE: 10 rows
+ orderkey |      revenue       | orderdate  | shippriority 
+----------+--------------------+------------+--------------
+  2456423 |        406181.0111 | 1995-03-05 |            0 
+  3459808 |  405838.6988999999 | 1995-03-04 |            0 
+   492164 |         390324.061 | 1995-02-19 |            0 
+  1188320 |        384537.9359 | 1995-03-09 |            0 
+  2435712 |        378673.0558 | 1995-02-26 |            0 
+  4878020 |        378376.7952 | 1995-03-12 |            0 
+  5521732 |        375153.9215 | 1995-03-13 |            0 
+  2628192 |        373133.3094 | 1995-02-22 |            0 
+   993600 |        371407.4595 | 1995-03-05 |            0 
+  2300070 | 367371.14519999997 | 1995-03-13 |            0 
+(10 rows)
+
+real	0m0.849s
+user	0m0.015s
+sys	0m0.011s
+=== 4. Проверка Gold против Q3 напрямую на tpch.sf1 ===
+Oct 11, 2026 12:37:39 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+ direct_minus_gold | gold_minus_direct | gold_rows 
+-------------------+-------------------+-----------
+                 0 |                 0 |        10 
+(1 row)
+=== 5. Метрики слоёв ===
+Oct 11, 2026 12:37:42 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+          tbl           | rows_cnt | files |  bytes   | size_mb 
+------------------------+----------+-------+----------+---------
+ bronze.customer        |   150000 |     1 |   240880 |  0.2297 
+ bronze.lineitem        |  6001215 |     2 | 41457761 | 39.5372 
+ gold.shipping_priority |       10 |     1 |      846 |  8.0E-4 
+ bronze.orders          |  1500000 |     1 |  6986224 |  6.6626 
+ silver.order_lines     |    30519 |     1 |   476378 |  0.4543 
+(5 rows)
+=== Свойства кодека (из $properties) ===
+Oct 11, 2026 12:37:43 PM org.jline.utils.Log logr
+WARNING: Unable to create a system terminal, creating a dumb terminal (enable debug logging for more information)
+           t            |               key               |  value  
+------------------------+---------------------------------+---------
+ bronze.lineitem        | write.format.default            | PARQUET 
+ bronze.lineitem        | write.parquet.compression-codec | zstd    
+ gold.shipping_priority | write.format.default            | PARQUET 
+ gold.shipping_priority | write.parquet.compression-codec | zstd    
+ silver.order_lines     | write.format.default            | PARQUET 
+ silver.order_lines     | write.parquet.compression-codec | zstd    
+(6 rows)
+ГОТОВО
